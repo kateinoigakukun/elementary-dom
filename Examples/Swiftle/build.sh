@@ -4,7 +4,7 @@ set -ex
 rm -rf $OUTDIR
 
 swift package \
-  --swift-sdk "$(swiftc -print-target-info | jq -r '.swiftCompilerTag')_wasm-embedded" \
+  --swift-sdk "${SWIFT_SDK_ID:-$(swiftc -print-target-info | jq -r '.swiftCompilerTag')_wasm}" \
   --enable-experimental-prebuilts \
   --allow-writing-to-package-directory \
   js -c release --output $OUTDIR --use-cdn
