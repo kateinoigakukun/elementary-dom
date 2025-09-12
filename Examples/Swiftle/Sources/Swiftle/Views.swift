@@ -33,27 +33,6 @@ struct GameView {
                 KeyboardView(keyboard: game.keyboard, onKeyPressed: onKeyPressed)
                 GameEndOverlay(game: $game)
             }
-
-            Paragraph(
-                .color(.gray400),
-                .fontFamily(.sansSerif),
-                .textAlign(.center),
-                .fontSize(.xs)
-            ) {
-                "This is a proof of concept demo of an Embedded Swift Wasm app."
-                br()
-                "Find the source code in the "
-                a(.href("https://github.com/sliemeobn/elementary-dom")) {
-                    "elementary-dom github repository."
-                }
-                .style(.color(.orange600))
-                .style(when: .hover, .textDecoration("underline"))
-            }
-        }
-        .style(.color(.white), .padding(t: 5), .fontFamily(.sansSerif))
-        .receive(GlobalDocument.onKeyDown) { event in
-            guard let key = EnteredKey(event) else { return }
-            onKeyPressed(key)
         }
     }
 }
