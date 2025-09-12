@@ -93,9 +93,7 @@ struct KeyboardLetterView {
     var content: some View {
         button {
             Text(guess.letter.value)
-                .style(.margin(.auto), .fontSize(.lg), .fontWeight(.semiBold))
         }
-        .style(.width(7), .height(10), .display(.flex), .borderRadius(0.5))
         .onClick { _ in
             onKeyPressed(.letter(guess.letter))
         }
