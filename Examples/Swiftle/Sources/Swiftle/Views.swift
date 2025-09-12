@@ -75,11 +75,11 @@ struct KeyboardView {
                 }
             }
             FlexRow(gap: 1) {
-                BackspaceKeyView(onKeyPressed: onKeyPressed)
+                // BackspaceKeyView(onKeyPressed: onKeyPressed)
                 for letter in keyboard.bottomRow {
                     KeyboardLetterView(guess: letter, onKeyPressed: onKeyPressed)
                 }
-                EnterKeyView(onKeyPressed: onKeyPressed)
+                // EnterKeyView(onKeyPressed: onKeyPressed)
             }
         }
     }
@@ -96,60 +96,6 @@ struct KeyboardLetterView {
         }
         .onClick { _ in
             onKeyPressed(.letter(guess.letter))
-        }
-    }
-}
-
-@View
-struct EnterKeyView {
-    var onKeyPressed: (EnteredKey) -> Void
-
-    var content: some View {
-        button {
-            img(.src("enter.svg")).style(
-                .maxWidth("100%")
-            )
-        }
-        .style(
-            .width(12),
-            .height(10),
-            .padding(2),
-            .borderRadius(0.5),
-            .display(.flex),
-            .alignItems(.center),
-            .background(.gray400)
-        )
-        .style(when: .active, .background(.gray300))
-        .enabledMobileActive()
-        .onClick { _ in
-            onKeyPressed(.enter)
-        }
-    }
-}
-
-@View
-struct BackspaceKeyView {
-    var onKeyPressed: (EnteredKey) -> Void
-
-    var content: some View {
-        button {
-            img(.src("backspace.svg")).style(
-                .maxWidth("100%")
-            )
-        }
-        .style(
-            .width(12),
-            .height(10),
-            .padding(1),
-            .borderRadius(0.5),
-            .display(.flex),
-            .alignItems(.center),
-            .background(.gray400)
-        )
-        .style(when: .active, .background(.gray300))
-        .enabledMobileActive()
-        .onClick { _ in
-            onKeyPressed(.backspace)
         }
     }
 }

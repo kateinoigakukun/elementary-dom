@@ -16,7 +16,7 @@ final class Game {
 
     init(solution: String = "SWIFT") {
         self.solution = solution.utf8
-        guesses = (0..<6).map { _ in Guess() }
+        guesses = (0..<1).map { _ in Guess() }
     }
 
     func handleKey(_ key: EnteredKey) {
