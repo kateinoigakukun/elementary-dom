@@ -11,18 +11,6 @@ struct GameView {
 
     var content: some View {
         FlexColumn(align: .center, gap: 5) {
-
-            FlexRow(align: .center, gap: 4) {
-                SwiftLogo()
-                Text("SWIFTLE")
-                    .style(
-                        .fontSize(.xxl),
-                        .fontFamily(.serif),
-                        .letterSpacing(.em(0.1))
-                    )
-                SwiftLogo()
-            }
-
             FlexColumn(gap: 1) {
                 for guess in game.guesses {
                     GuessView(guess: guess)
@@ -34,14 +22,6 @@ struct GameView {
                 GameEndOverlay(game: $game)
             }
         }
-    }
-}
-
-@View
-struct SwiftLogo {
-    var content: some View {
-        img(.src("swift-bird.svg"))
-            .style(.height(10))
     }
 }
 
@@ -116,9 +96,6 @@ struct KeyboardLetterView {
                 .style(.margin(.auto), .fontSize(.lg), .fontWeight(.semiBold))
         }
         .style(.width(7), .height(10), .display(.flex), .borderRadius(0.5))
-        .enabledMobileActive()
-        .style(.background(guess.status.backgroundColor ?? .gray400))
-        .style(when: .active, .background(guess.status.activeBackgroundColor))
         .onClick { _ in
             onKeyPressed(.letter(guess.letter))
         }
