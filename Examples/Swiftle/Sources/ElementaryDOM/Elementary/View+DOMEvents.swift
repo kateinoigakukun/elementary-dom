@@ -1,5 +1,3 @@
-import Elementary
-
 public extension View {
     consuming func on(_ event: String, handler: @escaping () -> Void) -> _EventHandlingView<Self> {
         _EventHandlingView(wrapped: self, listener: DOMEventListener(event: event, handler: handler))

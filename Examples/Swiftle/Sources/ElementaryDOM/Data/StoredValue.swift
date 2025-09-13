@@ -20,8 +20,5 @@ struct AnyValueBox {
         nonmutating set {
             (storage as! Box<T>).value = newValue
         }
-        nonmutating _modify {
-            yield &((storage as! Box<T>).value)
-        }
     }
 }

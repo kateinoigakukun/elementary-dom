@@ -25,8 +25,6 @@ typedef enum __attribute__((enum_extensibility(closed))) {
   JavaScriptValueKindNull = 4,
   JavaScriptValueKindUndefined = 5,
   JavaScriptValueKindFunction = 6,
-  JavaScriptValueKindSymbol = 7,
-  JavaScriptValueKindBigInt = 8,
 } JavaScriptValueKind;
 
 typedef uint32_t JavaScriptRawValueKindAndFlags;

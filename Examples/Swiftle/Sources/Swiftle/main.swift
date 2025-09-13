@@ -17,7 +17,6 @@ final class Game {
     private var _guesses: [Guess] = [Guess()]
     private static let propertyID_guesses = PropertyID("guesses")
 
-
     func handleKey() {
         guesses[0].addLetter()
     }
@@ -25,7 +24,9 @@ final class Game {
 }
 
 struct Guess {
+    var count = 0
     mutating func addLetter() {
+        count += 1
     }
 }
 
@@ -45,8 +46,7 @@ struct GameView {
 }
 
 extension GameView: __FunctionView {
-    static func __applyContext(_ context: borrowing _ViewContext, to view: inout Self) {
-    }
+    static func __applyContext(_ context: borrowing _ViewContext, to view: inout Self) {}
     static func __initializeState(from view: borrowing Self) -> _ViewStateStorage {
         let storage = _ViewStateStorage()
         view._game.__initializeState(storage: storage, index: 0)
@@ -60,7 +60,6 @@ extension GameView: __FunctionView {
 extension GameView: __ViewEquatable {
     static func __arePropertiesEqual(a: Self, b: Self) -> Bool {
         return true
-
     }
 }
 struct KeyboardLetterView {
@@ -68,11 +67,7 @@ struct KeyboardLetterView {
 
     @HTMLBuilder
     var content: some View {
-        button {
-            HTMLElement<HTMLTag.span, HTMLText> {
-                "S"
-            }
-        }
+        button {}
         .onClick {
             onKeyPressed()
         }
@@ -80,9 +75,7 @@ struct KeyboardLetterView {
 }
 
 extension KeyboardLetterView: __FunctionView {
-    static func __applyContext(_ context: borrowing _ViewContext, to view: inout Self) {
-
-    }
+    static func __applyContext(_ context: borrowing _ViewContext, to view: inout Self) {}
     typealias __ViewState = Void
 }
 

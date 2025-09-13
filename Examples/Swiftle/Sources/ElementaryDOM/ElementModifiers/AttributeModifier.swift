@@ -1,5 +1,3 @@
-import Elementary
-
 public final class _AttributeModifier: DOMElementModifier, Invalidateable {
     typealias Value = _AttributeStorage
 
@@ -18,7 +16,6 @@ public final class _AttributeModifier: DOMElementModifier, Invalidateable {
         self.lastValue = value
         self.upstream = upstream[_AttributeModifier.key]
         self.upstream?.tracker.addDependency(self)
-        _ = p {}.attributes(.class([""]), .style(["": ""]))
     }
 
     func updateValue(_ value: consuming Value, _ context: inout _RenderContext) {
@@ -55,21 +52,17 @@ extension _AttributeModifier {
 
         func invalidate(_ context: inout _RenderContext) {
             guard !isDirty else { return }
-            logTrace("invalidating attribute modifier")
             isDirty = true
             context.commitPlan.addNodeAction(CommitAction(run: updateDOMNode(_:)))
         }
 
         func updateDOMNode(_ context: inout _CommitContext) {
-            logTrace("updating attribute modifier")
             let newValue = modifier.value
-            context.dom.patchElementAttributes(node, with: newValue, replacing: previousValue)
             isDirty = false
             previousValue = newValue
         }
 
         func unmount(_ context: inout _CommitContext) {
-            logTrace("unmounting attribute modifier")
             self.modifier.tracker.removeDependency(self)
         }
     }

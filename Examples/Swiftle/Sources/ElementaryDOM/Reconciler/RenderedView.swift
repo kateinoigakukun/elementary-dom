@@ -1,12 +1,3 @@
-import Elementary
-
-public enum _LifecycleHook {
-    case onMount(() -> Void)
-    case onUnmount(() -> Void)
-    case onMountReturningCancelFunction(() -> () -> Void)
-    case __none
-}
-
 struct DOMEventListener {
     let event: String
     let handler: () -> Void
@@ -23,8 +14,4 @@ struct _DomEventListenerStorage {
             listener.handler()
         }
     }
-}
-
-public struct _DomTranstionHooks {
-
 }

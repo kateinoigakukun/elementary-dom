@@ -39,10 +39,6 @@ extension UInt: ConvertibleToJSValue {
     }
 }
 
-extension Float: ConvertibleToJSValue {
-    public var jsValue: JSValue { .number(Double(self)) }
-}
-
 extension Double: ConvertibleToJSValue {
     public var jsValue: JSValue { .number(self) }
 }
@@ -51,23 +47,7 @@ extension String: ConvertibleToJSValue {
     public var jsValue: JSValue { .string(JSString(self)) }
 }
 
-extension UInt8: ConvertibleToJSValue {
-    public var jsValue: JSValue { .number(Double(self)) }
-}
-
-extension UInt16: ConvertibleToJSValue {
-    public var jsValue: JSValue { .number(Double(self)) }
-}
-
 extension UInt32: ConvertibleToJSValue {
-    public var jsValue: JSValue { .number(Double(self)) }
-}
-
-extension Int8: ConvertibleToJSValue {
-    public var jsValue: JSValue { .number(Double(self)) }
-}
-
-extension Int16: ConvertibleToJSValue {
     public var jsValue: JSValue { .number(Double(self)) }
 }
 
@@ -198,10 +178,6 @@ extension RawJSValue: ConvertibleToJSValue {
             return .undefined
         case .function:
             return .function(JSFunction(id: UInt32(payload1)))
-        case .symbol:
-            fatalError("Symbol not supported in reduced JavaScriptKit")
-        case .bigInt:
-            fatalError("BigInt not supported in reduced JavaScriptKit")
         }
     }
 }

@@ -41,8 +41,6 @@ public final class _TextNode: _Reconcilable {
         case .startRemoval:
             domNode?.status = .removed
             reconciler.parentElement?.reportChangedChildren(.elementRemoved, &reconciler)
-        case .cancelRemoval:
-            fatalError("not implemented")
         case .markAsMoved:
             // TODO: checks and handling
             domNode?.status = .moved

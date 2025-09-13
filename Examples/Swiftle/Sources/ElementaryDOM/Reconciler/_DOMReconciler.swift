@@ -64,12 +64,12 @@ public struct _RenderContext: ~Copyable {
 }
 
 public struct _CommitContext: ~Copyable {
-    let dom: any DOM.Interactor
+    let dom: JSKitDOMInteractor
 
     private var prePaintActions: [() -> Void] = []
     private var postPaintActions: [() -> Void] = []
 
-    init(dom: any DOM.Interactor) {
+    init(dom: JSKitDOMInteractor) {
         self.dom = dom
     }
 
@@ -146,7 +146,7 @@ struct CommitPlan: ~Copyable {
         placements.append(action)
     }
 
-    consuming func flush(dom: inout any DOM.Interactor) {
+    consuming func flush(dom: inout JSKitDOMInteractor) {
         var context = _CommitContext(dom: dom)
         for node in nodes {
             node.run(&context)
@@ -190,7 +190,6 @@ public struct ContainerLayoutPass: ~Copyable {
         enum Status {
             case unchanged
             case added
-            case leaving  // TODO: something can be leaving and moved....
             case removed
             case moved
         }
@@ -199,6 +198,7 @@ public struct ContainerLayoutPass: ~Copyable {
         let reference: DOM.Node
     }
 }
+
 
 struct ManagedDOMReference: ~Copyable {
     let reference: DOM.Node

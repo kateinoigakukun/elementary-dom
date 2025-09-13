@@ -7,7 +7,6 @@ public protocol _Reconcilable: ~Copyable {
 
 public enum _ReconcileOp {
     case startRemoval
-    case cancelRemoval
     case markAsMoved
 }
 

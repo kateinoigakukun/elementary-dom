@@ -25,7 +25,6 @@ public final class _ElementNode<ChildNode>: _Reconcilable where ChildNode: _Reco
 
     struct ChildrenLayoutStatus {
         var isDirty: Bool = false
-        var count: Int = 0
     }
 
     private(set) var asParentRef: AnyParentElememnt!
@@ -148,8 +147,6 @@ public final class _ElementNode<ChildNode>: _Reconcilable where ChildNode: _Reco
             // TODO: transitions
             domNode?.status = .removed
             reconciler.parentElement!.reportChangedChildren(.elementRemoved, &reconciler)
-        case .cancelRemoval:
-            fatalError("not implemented")
         case .markAsMoved:
             assert(domNode != nil, "unitialized element in markAsMoved")
             domNode?.status = .moved
@@ -201,10 +198,6 @@ public final class _ElementNode<ChildNode>: _Reconcilable where ChildNode: _Reco
                     sibling = entry.reference
                 case .removed:
                     context.dom.removeChild(entry.reference, from: ref)
-                case .leaving:
-                    sibling = entry.reference
-                    // TODO: for FLIP handling
-                    break
                 case .unchanged:
                     sibling = entry.reference
                     break

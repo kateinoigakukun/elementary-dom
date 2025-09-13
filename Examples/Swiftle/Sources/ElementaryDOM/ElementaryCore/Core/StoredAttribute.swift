@@ -30,16 +30,12 @@ public struct _StoredAttribute: Equatable, Sendable {
     enum Value: Equatable, Sendable {
         case empty
         case plain(String)
-        case styles(Styles)
-        case classes(Classes)
 
         @usableFromInline
         static func == (lhs: Value, rhs: Value) -> Bool {
             switch (lhs, rhs) {
             case (.empty, .empty): return true
             case let (.plain(lhsValue), .plain(rhsValue)): return lhsValue.utf8Equals(rhsValue)
-            case let (.styles(lhsStyles), .styles(rhsStyles)): return lhsStyles == rhsStyles
-            case let (.classes(lhsClasses), .classes(rhsClasses)): return lhsClasses == rhsClasses
             default: return false
             }
         }
@@ -49,14 +45,11 @@ public struct _StoredAttribute: Equatable, Sendable {
     @usableFromInline
     var _value: Value
 
-    // NOTE: this is mainly here to not break API for now
     public var value: String? {
         get {
             switch _value {
             case .empty: return nil
             case let .plain(value): return value
-            case let .styles(styles): return styles.flatten()
-            case let .classes(classes): return classes.flatten()
             }
         }
         set {
@@ -74,19 +67,6 @@ public struct _StoredAttribute: Equatable, Sendable {
         self.mergeMode = mergeMode
     }
 
-    @usableFromInline
-    init(_ styles: Styles) {
-        self.name = "style"
-        self._value = .styles(styles)
-        self.mergeMode = .appendValue(";")
-    }
-
-    @usableFromInline
-    init(_ classes: Classes) {
-        self.name = "class"
-        self._value = .classes(classes)
-        self.mergeMode = .appendValue(" ")
-    }
 
     mutating func mergeWith(_ attribute: consuming _StoredAttribute) {
         switch attribute.mergeMode {
@@ -98,30 +78,6 @@ public struct _StoredAttribute: Equatable, Sendable {
                 _value = other
             case (.plain(let existing), .plain(let other)):
                 _value = .plain("\(existing)\(separator)\(other)")
-            case (.styles(var existing), .styles(let other)):
-                existing.append(contentsOf: other)
-                _value = .styles(existing)
-            case (.classes(var existing), .classes(let other)):
-                existing.append(contentsOf: other)
-                _value = .classes(existing)
-            case (.plain(let existing), .styles(let styles)):
-                var newStyles = Styles(plainValue: existing)
-                newStyles.append(contentsOf: styles)
-                _value = .styles(newStyles)
-            case (.styles(var styles), .plain(let other)):
-                styles.append(plainValue: other)
-                _value = .styles(styles)
-            case (.plain(let existing), .classes(let classes)):
-                var newClasses = Classes([existing])
-                newClasses.append(contentsOf: classes)
-                _value = .classes(newClasses)
-            case (.classes(var classes), .plain(let other)):
-                classes.append(plainValue: other)
-                _value = .classes(classes)
-            case (.styles, .classes), (.classes, .styles):
-                assertionFailure("Cannot merge styles and classes")
-                // If trying to merge incompatible types, just replace
-                _value = attribute._value
             }
         case .replaceValue:
             _value = attribute._value
@@ -136,114 +92,6 @@ public struct _StoredAttribute: Equatable, Sendable {
     }
 }
 
-extension _StoredAttribute {
-    @usableFromInline
-    struct Styles: Equatable, Sendable {
-        @usableFromInline
-        struct Entry: Equatable, Sendable {
-            let key: String
-            let value: String
-
-            @usableFromInline
-            init(key: String, value: String) {
-                self.key = key
-                self.value = value
-            }
-
-            @usableFromInline
-            static func == (lhs: Entry, rhs: Entry) -> Bool {
-                lhs.value.utf8Equals(rhs.value) && lhs.key.utf8Equals(rhs.key)
-            }
-        }
-
-        @usableFromInline
-        var styles: [Entry]
-
-        @inlinable
-        init(_ elements: some Sequence<(key: String, value: String)>) {
-            self.styles = elements.map { Entry(key: $0.0, value: $0.1) }
-        }
-
-        @usableFromInline
-        init(plainValue: String) {
-            self.styles = [Entry(key: "", value: plainValue)]
-        }
-
-        mutating func append(plainValue: String) {
-            styles.append(Entry(key: "", value: plainValue))
-        }
-
-        mutating func append(contentsOf other: consuming Styles) {
-            let originalCount = styles.count
-            for entry in other.styles {
-                if entry.key.isEmpty {
-                    styles.append(entry)
-                } else {
-                    for i in 0..<originalCount {
-                        if styles[i].key.utf8Equals(entry.key) {
-                            styles.remove(at: i)
-                            break
-                        }
-                    }
-                    styles.append(entry)
-                }
-            }
-        }
-
-        consuming func flatten() -> String {
-            var result = ""
-            for (index, entry) in styles.enumerated() {
-                if index > 0 {
-                    result += ";"
-                }
-                if entry.key.isEmpty {
-                    result += entry.value
-                } else {
-                    result += "\(entry.key):\(entry.value)"
-                }
-            }
-            return result
-        }
-    }
-
-    @usableFromInline
-    struct Classes: Equatable, Sendable {
-        @usableFromInline
-        var classes: [String]
-
-        @inlinable
-        init(_ elements: [String]) {
-            self.classes = elements
-        }
-
-        @inlinable
-        init(_ elements: some Sequence<String>) {
-            self.classes = Array(elements)
-        }
-
-        mutating func append(plainValue newClass: String) {
-            classes.append(newClass)
-        }
-
-        mutating func append(contentsOf other: consuming Classes) {
-            let originalCount = classes.count
-            for newClass in other.classes {
-                if !classes.prefix(originalCount).contains(where: { $0.utf8Equals(newClass) }) {
-                    classes.append(newClass)
-                }
-            }
-        }
-
-        consuming func flatten() -> String {
-            classes.joined(separator: " ")
-        }
-
-        @usableFromInline
-        static func == (lhs: Classes, rhs: Classes) -> Bool {
-            lhs.classes.elementsEqual(rhs.classes, by: String.utf8Equals)
-        }
-    }
-}
 
 extension String {
     @inline(__always)

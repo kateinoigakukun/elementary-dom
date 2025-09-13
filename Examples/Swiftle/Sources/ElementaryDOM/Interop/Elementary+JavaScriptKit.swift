@@ -1,4 +1,3 @@
-import Elementary
 import JavaScriptKit
 
 extension DOM.Node {
@@ -11,52 +10,13 @@ extension DOM.Event {
     var jsObject: JSObject { ref as! JSObject }
 }
 
-extension DOM.PropertyValue {
-    var jsValue: JSValue {
-        switch self {
-        case let .string(value):
-            return value.jsValue
-        case let .number(value):
-            return value.jsValue
-        case let .boolean(value):
-            return value.jsValue
-        case let .stringArray(value):
-            return value.jsValue
-        case .null:
-            return .null
-        case .undefined:
-            return .undefined
-        }
-    }
-
-    init?(_ jsValue: JSValue) {
-        switch jsValue {
-        case let .string(value):
-            self = .string(value.description)
-        case let .number(value):
-            self = .number(value)
-        case let .boolean(value):
-            self = .boolean(value)
-        case .object:
-            // JSArray removed, just return nil for objects
-            return nil
-        case .null:
-            self = .null
-        case .undefined:
-            self = .undefined
-        default:
-            return nil
-        }
-    }
-}
-
 nonisolated(unsafe) var g_handleClickEvent: () -> Void = {}
 @_expose(wasm, "handleClickEvent")
 func handleClickEvent() {
     g_handleClickEvent()
 }
 
-final class JSKitDOMInteractor: DOM.Interactor {
+final class JSKitDOMInteractor {
     private let document = JSObject.global.document
     private let setTimeout = JSObject.global.setTimeout.function!
 
@@ -89,11 +49,6 @@ final class JSKitDOMInteractor: DOM.Interactor {
     }
 
     func addEventListener(_ node: DOM.Node, event: String, sink: DOM.EventSink) {
-        _ = node.jsObject.addEventListener!(event.jsValue, sink.ref)
-    }
-
-    func removeEventListener(_ node: DOM.Node, event: String, sink: DOM.EventSink) {
-        _ = node.jsObject.removeEventListener!(event.jsValue, sink.ref)
     }
 
     func patchText(_ node: DOM.Node, with text: String) {

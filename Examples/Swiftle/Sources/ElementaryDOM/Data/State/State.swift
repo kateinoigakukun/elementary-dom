@@ -18,10 +18,6 @@ public struct State<V> {
         }
     }
 
-    public var projectedValue: Binding<V> {
-        guard let accessor else { fatalError("State.projectedValue called outside of content") }
-        return Binding(accessor: accessor)
-    }
 
     public init(wrappedValue: V) {
         initialValue = wrappedValue
