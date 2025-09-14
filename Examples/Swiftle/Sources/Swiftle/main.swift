@@ -72,4 +72,8 @@ extension KeyboardLetterView: __FunctionView {
     typealias __ViewState = Void
 }
 
-GameView().mount()
+@_expose(wasm, "mount")
+@_cdecl("mount")
+func mount() {
+    GameView().mount()
+}

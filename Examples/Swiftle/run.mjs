@@ -53,6 +53,8 @@ const { instance } = await instantiate({
         }
     }
 })
+
+instance.exports.mount()
 await new Promise(resolve => setTimeout(resolve, 100))
 
 for (let i = 0; i < 200; i++) {
