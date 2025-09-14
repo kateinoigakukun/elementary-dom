@@ -137,6 +137,36 @@ The combination creates a scenario where:
    - Scheduler with requestAnimationFrame timing
 3. **Crash Signature**: `RuntimeError: memory access out of bounds` during Swift memory cleanup
 
+## Execution Flow Analysis (from Print Tracing)
+
+### ✅ Confirmed Execution Path
+Based on strategic print statement tracing, the following execution pattern was confirmed:
+
+**Initialization Flow:**
+- `R1 R2 F1 R3 F2 C1 C2 F3` (Scheduler: reconcile → requestFramePaint → flushCommitPlan)
+
+**User Interaction Loop (7 iterations):**
+- `A 1 3 4 S1 S2 2 B R1 R2 F1 R3 F2 C1 C2 F3`
+  - `A`: GameView.onKeyPressed() entry
+  - `1`: Game.handleKey() entry
+  - `3`: Guess.addLetter() entry
+  - `4`: Guess.addLetter() exit
+  - `S1-S2`: Scheduler.scheduleFunction()
+  - `2`: Game.handleKey() exit
+  - `B`: GameView.onKeyPressed() exit
+  - `R1-R3`: Scheduler.reconcile()
+  - `F1-F3`: Scheduler.requestFramePaint() + callback
+  - `C1-C2`: Scheduler.flushCommitPlan()
+
+**Key Findings:**
+- All major Scheduler methods execute in every interaction cycle
+- Memory corruption happens during 8th interaction loop at reconcile() start
+- Print statements themselves can trigger different crash patterns (heap corruption vs memory bounds)
+
+### ✅ Safe Code Reductions (Based on Tracing)
+- **UInt8 extension removal**: Successfully removed unused integer type conversion without affecting crash reproduction
+- **Complex constructor patterns**: Swiftle app uses only basic function calls, no instanceof or complex constructor operations
+
 ## Next Steps Strategy
 
 Focus reductions on lower-risk areas first:

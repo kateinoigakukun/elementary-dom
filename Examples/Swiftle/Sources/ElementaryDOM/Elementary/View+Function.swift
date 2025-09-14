@@ -39,20 +39,7 @@ public extension __FunctionView where __ViewState == Void {
 }
 
 public extension __FunctionView {
-    static func __areEqual(a: borrowing Self, b: borrowing Self) -> Bool where Self: Equatable {
-        a == b
-    }
-
-    static func __areEqual(a: borrowing Self, b: Self) -> Bool where Self: __ViewEquatable {
-        Self.__arePropertiesEqual(a: a, b: b)
-    }
-
-    static func __areEqual(a: borrowing Self, b: borrowing Self) -> Bool where Self: Equatable & __ViewEquatable {
-        // that is the question.... but I think if explicit equality is provided, we should use it
-        a == b
-    }
-
     static func __areEqual(a: borrowing Self, b: borrowing Self) -> Bool {
-        false
+        return false
     }
 }

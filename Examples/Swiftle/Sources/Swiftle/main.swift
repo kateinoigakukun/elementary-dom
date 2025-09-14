@@ -56,16 +56,9 @@ extension GameView: __FunctionView {
         view._game.__restoreState(storage: storage, index: 0)
     }
 }
-
-extension GameView: __ViewEquatable {
-    static func __arePropertiesEqual(a: Self, b: Self) -> Bool {
-        return true
-    }
-}
 struct KeyboardLetterView {
     var onKeyPressed: () -> Void
 
-    @HTMLBuilder
     var content: some View {
         button {}
         .onClick {

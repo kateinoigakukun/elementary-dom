@@ -1,13 +1,9 @@
-// TODO: main-actor stuff very unclear at the moment, ideally not needed at all
 final class App {
-    private var root: AnyParentElememnt?
     private var scheduler: Scheduler
 
-    // TODO: rethink this whole API - maybe once usage of async is clearer
     // there should probably be a way to "unmount" the app
     init(dom: JSKitDOMInteractor) {
         self.scheduler = Scheduler(dom: dom)
-        self.root = nil
     }
 
     // generic initializers must be convenience on final classes for embedded
@@ -19,19 +15,17 @@ final class App {
             identifier: ObjectIdentifier(self),
             depthInTree: 0,
             runUpdate: { [self, rootView] context in
-                self.root =
-                    _ElementNode(
-                        root: dom.root,
-                        context: &context,
-                        makeChild: { [rootView] context in
-                            RootView._makeNode(
-                                rootView,
-                                context: _ViewContext(),
-                                reconciler: &context
-                            )
-                        }
-                    )
-                    .asParentRef
+                _ElementNode(
+                    root: dom.root,
+                    context: &context,
+                    makeChild: { [rootView] context in
+                        RootView._makeNode(
+                            rootView,
+                            context: _ViewContext(),
+                            reconciler: &context
+                        )
+                    }
+                )
             }
         )
         scheduler.pendingFunctionsQueue.registerFunctionForUpdate(function)
@@ -39,7 +33,6 @@ final class App {
     }
 }
 
-// TODO: this ain't such a great shape...
 final class Scheduler {
     private var dom: JSKitDOMInteractor
     var pendingFunctionsQueue: PendingFunctionQueue = .init()

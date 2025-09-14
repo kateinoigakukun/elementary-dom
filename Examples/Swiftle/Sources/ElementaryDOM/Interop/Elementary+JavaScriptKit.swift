@@ -10,7 +10,7 @@ extension DOM.Event {
     var jsObject: JSObject { ref as! JSObject }
 }
 
-nonisolated(unsafe) var g_handleClickEvent: () -> Void = {}
+public nonisolated(unsafe) var g_handleClickEvent: () -> Void = {}
 @_expose(wasm, "handleClickEvent")
 func handleClickEvent() {
     g_handleClickEvent()
@@ -39,24 +39,11 @@ final class JSKitDOMInteractor {
         .init(document.createElement(element).object!)
     }
 
-    // Low-level DOM-like operations used by protocol extensions
-    func setAttribute(_ node: DOM.Node, name: String, value: String?) {
-        _ = node.jsObject.setAttribute!(name.jsValue, value.jsValue)
-    }
-
-    func removeAttribute(_ node: DOM.Node, name: String) {
-        _ = node.jsObject.removeAttribute!(name)
-    }
-
-    func addEventListener(_ node: DOM.Node, event: String, sink: DOM.EventSink) {
-    }
-
     func patchText(_ node: DOM.Node, with text: String) {
         _ = node.jsObject.textContent = text.jsValue
     }
 
     func replaceChildren(_ children: [DOM.Node], in parent: DOM.Node) {
-        logTrace("setting \(children.count) children in \(parent)")
         let function = parent.jsObject.replaceChildren.function!
         function.callAsFunction(
             this: parent.jsObject,

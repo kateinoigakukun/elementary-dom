@@ -21,11 +21,6 @@ public struct HTMLAttributeMergeAction: Sendable {
 
     /// Replaces the value of the existing attribute with the new value.
     public static var replacing: Self { .init(mergeMode: .replaceValue) }
-
-    /// Ignores the new value if the attribute already exists.
-    public static var ignoring: Self { .init(mergeMode: .ignoreIfSet) }
-
-    /// Appends the new value to the existing value, separated by the specified string.
-    public static func appending(separatedBy: String) -> Self { .init(mergeMode: .appendValue(separatedBy)) }
 }
+
 

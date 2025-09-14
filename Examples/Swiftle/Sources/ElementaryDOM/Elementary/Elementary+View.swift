@@ -62,9 +62,6 @@ public struct _ViewContext {
         modifiers.takeModifiers()
     }
 
-    public static var empty: Self {
-        .init()
-    }
 }
 
 extension HTMLElement: _Mountable, View where Content: _Mountable {
@@ -84,17 +81,17 @@ extension HTMLElement: _Mountable, View where Content: _Mountable {
         reconciler: inout _RenderContext
     ) -> _MountedNode {
         let attributeModifier = _AttributeModifier(value: view._attributes, upstream: context.modifiers, &reconciler)
-        context.modifiers[_AttributeModifier.key] = attributeModifier
 
         let value = makeValue(view, context: &context)
-        assert(context.modifiers.isEmpty)
 
         return _MountedNode(
             state: attributeModifier,
             child: _ElementNode(
                 value: value,
                 context: &reconciler,
-                makeChild: { [context] r in Content._makeNode(view.content, context: context, reconciler: &r) }
+                makeChild: { [context] r in
+                    Content._makeNode(view.content, context: context, reconciler: &r)
+                }
             )
         )
     }
@@ -141,9 +138,7 @@ extension HTMLText: _Mountable, View {
         context: consuming _ViewContext,
         node: inout _MountedNode,
         reconciler: inout _RenderContext
-    ) {
-        node.patch(view.text, context: &reconciler)
-    }
+    ) {}
 }
 
 
@@ -180,11 +175,7 @@ extension _HTMLArray: _Mountable, View where Element: View {
             indexes,
             context: &reconciler,
             makeOrPatchNode: { [context] index, node, r in
-                if node == nil {
-                    node = Element._makeNode(view.value[index], context: context, reconciler: &r)
-                } else {
-                    Element._patchNode(view.value[index], context: context, node: &node!, reconciler: &r)
-                }
+                node = Element._makeNode(view.value[index], context: context, reconciler: &r)
             }
         )
 

@@ -3,6 +3,7 @@ import JavaScriptKit
 
 public extension View {
     consuming func mount() {
-        _ = App(dom: JSKitDOMInteractor(root: JSObject.global.document.body.object!), root: self)
+        let interactor = JSKitDOMInteractor(root: JSObject.global.document.body.object!)
+        _ = App(dom: interactor, root: self)
     }
 }

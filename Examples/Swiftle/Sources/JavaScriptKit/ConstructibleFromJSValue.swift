@@ -72,5 +72,4 @@ extension UnsignedInteger where Self: ConstructibleFromJSValue {
     }
 }
 extension UInt: ConstructibleFromJSValue {}
-extension UInt8: ConstructibleFromJSValue {}
 extension UInt32: ConstructibleFromJSValue {}

@@ -17,7 +17,6 @@ public extension HTMLBuilder {
     // Removed generic buildBlock - not needed for crash reproduction
 }
 
-extension _HTMLTuple2: Sendable where V0: Sendable, V1: Sendable {}
 public struct _HTMLTuple2<V0: HTML, V1: HTML>: HTML {
     public let v0: V0
     public let v1: V1

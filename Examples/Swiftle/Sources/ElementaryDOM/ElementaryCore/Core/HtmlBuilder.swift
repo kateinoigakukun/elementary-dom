@@ -23,11 +23,7 @@
 
 public extension HTML where Content == Never {
     var content: Never {
-        #if hasFeature(Embedded)
-        fatalError("content was called on an unsupported type")
-        #else
         fatalError("content cannot be called on \(Self.self)")
-        #endif
     }
 }
 
@@ -38,9 +34,6 @@ extension Never: HTML {
 }
 
 
-/// A type that represents text content in an HTML document.
-///
-/// The text will be escaped when rendered.
 /// A type that represents text content in an HTML document.
 ///
 /// The text will be escaped when rendered.
@@ -57,7 +50,6 @@ public struct HTMLText: HTML, Sendable {
 
 }
 
-extension _HTMLArray: Sendable where Element: Sendable {}
 
 public struct _HTMLArray<Element: HTML>: HTML {
     public let value: [Element]

@@ -10,20 +10,7 @@
 public struct _StoredAttribute: Equatable, Sendable {
     @usableFromInline
     enum MergeMode: Equatable, Sendable {
-        case appendValue(_ separator: String = " ")
         case replaceValue
-        case ignoreIfSet
-
-        @usableFromInline
-        static func == (lhs: MergeMode, rhs: MergeMode) -> Bool {
-            switch (lhs, rhs) {
-            case let (.appendValue(lhsSeparator), .appendValue(rhsSeparator)): return lhsSeparator.utf8Equals(rhsSeparator)
-            case (.replaceValue, .replaceValue): return true
-            case (.ignoreIfSet, .ignoreIfSet): return true
-            default:
-                return false
-            }
-        }
     }
 
     @usableFromInline
@@ -69,21 +56,7 @@ public struct _StoredAttribute: Equatable, Sendable {
 
 
     mutating func mergeWith(_ attribute: consuming _StoredAttribute) {
-        switch attribute.mergeMode {
-        case let .appendValue(separator):
-            switch (_value, attribute._value) {
-            case (_, .empty):
-                break
-            case (.empty, let other):
-                _value = other
-            case (.plain(let existing), .plain(let other)):
-                _value = .plain("\(existing)\(separator)\(other)")
-            }
-        case .replaceValue:
-            _value = attribute._value
-        case .ignoreIfSet:
-            break
-        }
+        _value = attribute._value
     }
 
     @inlinable

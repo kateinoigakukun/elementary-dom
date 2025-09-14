@@ -1,5 +1,5 @@
 /// An HTML element that can contain content.
-public struct HTMLElement<Tag: HTMLTagDefinition, Content: HTML>: HTML where Tag: HTMLTrait.Paired {
+public struct HTMLElement<Tag: HTMLTagDefinition, Content: HTML>: HTML where Tag: HTMLTagDefinition {
     /// The type of the HTML tag this element represents.
     public typealias Tag = Tag
     public var _attributes: _AttributeStorage
@@ -48,5 +48,4 @@ public struct HTMLElement<Tag: HTMLTagDefinition, Content: HTML>: HTML where Tag
 
 }
 
-extension HTMLElement: Sendable where Content: Sendable {}
 

@@ -4,16 +4,8 @@ public final class _ViewStateStorage {
 
     public init() {}
 
-    public func reserveCapacity(_ capacity: Int) {
-        values.reserveCapacity(capacity)
-    }
 
     public func initializeValueStorage<V>(initialValue: V, index: Int) {
-        precondition(index == values.count, "State storage must be initialized in order")
-        values.append(AnyValueBox(initialValue))
-    }
-
-    public func initializeValueStorage<V: AnyObject>(initialValue: V, index: Int) {
         precondition(index == values.count, "State storage must be initialized in order")
         values.append(AnyValueBox(initialValue))
     }
@@ -38,8 +30,6 @@ public final class _ViewStateStorage {
     private let _$reactivity = ReactivityRegistrar()
 }
 
-extension _ViewStateStorage: ReactiveObject {
-}
 
 struct StateAccessor<V>: Equatable {
     let storage: _ViewStateStorage
