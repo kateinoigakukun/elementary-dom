@@ -7,14 +7,14 @@ public protocol _Mountable {
     associatedtype _MountedNode: _Reconcilable
 
     static func _makeNode(
-        _ view: consuming Self,
-        context: consuming _ViewContext,
+        _ view: Self,
+        context: _ViewContext,
         reconciler: inout _RenderContext
     ) -> _MountedNode
 
     static func _patchNode(
-        _ view: consuming Self,
-        context: consuming _ViewContext,
+        _ view: Self,
+        context: _ViewContext,
         node: inout _MountedNode,
         reconciler: inout _RenderContext
     )
@@ -30,16 +30,16 @@ extension Never: _Mountable {
     public typealias _MountedNode = _EmptyNode
 
     public static func _makeNode(
-        _ view: consuming Self,
-        context: consuming _ViewContext,
+        _ view: Self,
+        context: _ViewContext,
         reconciler: inout _RenderContext
     ) -> _MountedNode {
         fatalError("This should never be called")
     }
 
     public static func _patchNode(
-        _ view: consuming Self,
-        context: consuming _ViewContext,
+        _ view: Self,
+        context: _ViewContext,
         node: inout _MountedNode,
         reconciler: inout _RenderContext
     ) {}
@@ -76,12 +76,13 @@ extension HTMLElement: _Mountable, View where Content: _Mountable {
     }
 
     public static func _makeNode(
-        _ view: consuming Self,
-        context: consuming _ViewContext,
+        _ view: Self,
+        context: _ViewContext,
         reconciler: inout _RenderContext
     ) -> _MountedNode {
         let attributeModifier = _AttributeModifier(value: view._attributes, upstream: context.modifiers, &reconciler)
 
+        var context = context
         let value = makeValue(view, context: &context)
 
         return _MountedNode(
@@ -97,11 +98,12 @@ extension HTMLElement: _Mountable, View where Content: _Mountable {
     }
 
     public static func _patchNode(
-        _ view: consuming Self,
-        context: consuming _ViewContext,
+        _ view: Self,
+        context: _ViewContext,
         node: inout _MountedNode,
         reconciler: inout _RenderContext
     ) {
+        var context = context
         node.state.updateValue(view._attributes, &reconciler)
         context.modifiers[_AttributeModifier.key] = node.state
 
@@ -126,16 +128,16 @@ extension HTMLText: _Mountable, View {
     public typealias _MountedNode = _TextNode
 
     public static func _makeNode(
-        _ view: consuming Self,
-        context: consuming _ViewContext,
+        _ view: Self,
+        context: _ViewContext,
         reconciler: inout _RenderContext
     ) -> _MountedNode {
         _MountedNode(view.text, context: &reconciler)
     }
 
     public static func _patchNode(
-        _ view: consuming Self,
-        context: consuming _ViewContext,
+        _ view: Self,
+        context: _ViewContext,
         node: inout _MountedNode,
         reconciler: inout _RenderContext
     ) {}
@@ -146,8 +148,8 @@ extension _HTMLArray: _Mountable, View where Element: View {
     public typealias _MountedNode = _KeyedNode<Element._MountedNode>
 
     public static func _makeNode(
-        _ view: consuming Self,
-        context: consuming _ViewContext,
+        _ view: Self,
+        context: _ViewContext,
         reconciler: inout _RenderContext
     ) -> _MountedNode {
         _MountedNode(
@@ -162,8 +164,8 @@ extension _HTMLArray: _Mountable, View where Element: View {
     }
 
     public static func _patchNode(
-        _ view: consuming Self,
-        context: consuming _ViewContext,
+        _ view: Self,
+        context: _ViewContext,
         node: inout _MountedNode,
         reconciler: inout _RenderContext
     ) {
