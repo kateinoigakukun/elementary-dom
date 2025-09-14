@@ -10,7 +10,7 @@ globalThis.requestAnimationFrame = (callback) => {
 
 dom.window._virtualConsole.on("jsdomError", (error) => {
     console.error("JSDOM caught an error:", error.message);
-    dumpMemory(new Uint8Array(instance.exports.memory.buffer), 0)
+    dumpMemory(0)
     process.exit(1)
 });
 
@@ -23,7 +23,8 @@ globalThis.handleClickEvent = () => {
     instance.exports.handleClickEvent()
 }
 
-function dumpMemory(bytes, start, length = 4096) {
+function dumpMemory(start, length = 4096) {
+    const bytes = new Uint8Array(globalThis.INSTANCE.exports.memory.buffer)
     console.log(`Dumping memory ${start} to ${start + length}`)
     writeFileSync(`.build/memory-${start}-${length}.bin`, Buffer.from(bytes.slice(start, start + length)))
 }
@@ -32,12 +33,16 @@ const options = await defaultNodeSetup({})
 process.on("uncaughtException", (error) => {
     console.error(error)
     if (error instanceof WebAssembly.RuntimeError) {
-        dumpMemory(new Uint8Array(instance.exports.memory.buffer), 0)
+        dumpMemory(0)
         process.exit(1)
     }
 })
 const { instance } = await instantiate({
     ...options,
+    instrumentInstance(instance, { _swift }) {
+        globalThis.INSTANCE = instance
+        return instance
+    },
     addToCoreImports(imports, { getInstance }) {
         imports.env = {
             queueMicrotask: () => {
@@ -56,4 +61,4 @@ for (let i = 0; i < 200; i++) {
 }
 
 console.log("NOT REPRODUCIBLE")
-dumpMemory(new Uint8Array(instance.exports.memory.buffer), 0)
+dumpMemory(0)

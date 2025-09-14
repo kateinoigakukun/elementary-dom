@@ -9,6 +9,9 @@ rm -rf $OUTDIR
 
 $SWIFT_BIN/swift package \
   --swift-sdk "${SWIFT_SDK_ID:-$(swiftc -print-target-info | jq -r '.swiftCompilerTag')_wasm}" \
+  --sanitize address \
+  -Xlinker /home/katei/ghq/work.katei.dev/swift-source/build/Ninja-RelWithDebInfoAssert/wasmllvmruntimelibs-linux-x86_64/wasm32-wasip1/compiler-rt/lib/wasip1/libclang_rt.asan-wasm32.a \
+  -Xlinker --global-base=268435456 -Xlinker --max-memory=2147483648 -Xlinker --stack-first \
   --enable-experimental-prebuilts \
   --allow-writing-to-package-directory \
   js -c release --output $OUTDIR --debug-info-format dwarf --no-optimize
